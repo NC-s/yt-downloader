@@ -46,7 +46,7 @@ async def if_user_sent_link(message: Message) -> None:
 
 async def if_user_sent_text(message: Message) -> None:
     """Handles the message if a user sent text"""
-    await message.reply(text="❌ " + _("This is not a link to YouTube Shorts", locale=message.from_user.language_code))
+    await message.reply(text="❌ " + _("This is not a link to YouTube Shorts/YouTube Videos", locale=message.from_user.language_code))
 
 
 async def if_user_input_block(message: Message) -> None:
@@ -64,9 +64,12 @@ def register_messages_handlers(dp: Dispatcher) -> None:
     dp.register_message_handler(
         if_user_sent_link,
         Text(startswith="https://"),
-        regexp=r"(?:https?://)?(?:www\.)?" r"(?:youtube.com/shorts/)" r"([a-zA-Z0-9_-]{11})",
+        regexp=r"(?:https?://)?(?:www\.)?" r"(?:youtube.com/watch\?v=|youtube.com/shorts/)" r"([a-zA-Z0-9_-]{11})",
         state=None,
     )
-    dp.register_message_handler(if_user_sent_text, content_types=ContentTypes.TEXT, state=None)
-    dp.register_message_handler(if_user_input_block, content_types=ContentTypes.TEXT, state=UserInput.Block)
-    dp.register_message_handler(if_user_sent_anything_but_text, content_types=ContentTypes.ANY)
+    dp.register_message_handler(
+        if_user_sent_text, content_types=ContentTypes.TEXT, state=None)
+    dp.register_message_handler(
+        if_user_input_block, content_types=ContentTypes.TEXT, state=UserInput.Block)
+    dp.register_message_handler(
+        if_user_sent_anything_but_text, content_types=ContentTypes.ANY)

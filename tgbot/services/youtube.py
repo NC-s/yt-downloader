@@ -62,16 +62,19 @@ class YouTube:
             video_info = ydl.extract_info(youtube_watch_url, download=False)
             duration: int | None = video_info.get("duration")
 
-            if duration and duration <= 60:
+            if duration and duration <= 3600:
                 # Set save folder and file name
                 title: str = video_info.get("title")
-                path_to_file: str = join(TEMP_DIR, f"{self._remove_unwanted_chars(string=title)}.mp4")
+                path_to_file: str = join(
+                    TEMP_DIR, f"{self._remove_unwanted_chars(string=title)}.mp4")
                 params: dict = getattr(ydl, "params")
                 params.update({"outtmpl": {"default": path_to_file}})
                 setattr(ydl, "params", params)
 
                 # Load a video stream
                 ydl.download(youtube_watch_url)
+
+                logger.info(f"Downloaded the video, with duration: {duration}")
 
                 return f"{path_to_file}"
 
